@@ -1,11 +1,12 @@
 # NAME: Game
+# AUTHOR: blackmatrix7
+# REPO: https://github.com/blackmatrix7/ios_rule_script
 # UPDATED: 2022-11-26 02:08:20
 # DOMAIN: 5
 # DOMAIN-KEYWORD: 4
 # DOMAIN-SUFFIX: 512
 # IP-CIDR: 54
 # TOTAL: 575
-
 payload:
   - DOMAIN,steammobile.akamaized.net
   - DOMAIN,img-prod-cms-rt-microsoft-com.akamaized.net
