@@ -1,53 +1,32 @@
 mixed-port: 7890
-#---------------------------------------------------#
-## 配置文件需要放置在 $HOME/.config/clash/*.yaml
 allow-lan: false
 mode: Rule
 log-level: silent
 external-controller: 127.0.0.1:60000
-
-# 导入机场
-# 节点配置文件统一存放在 ./profiles/proxies/ 目录中
 proxy-providers:
-  # 从链接导入的配置文件
   foo:
-    type: http
-    path: ./profiles/proxies/foo.yaml
-    url: 订阅链接
-    interval: 3600 
+    type: file
+    path: ./profiles/配置文件名
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
-      interval: 300
-
-  # 从链接导入的配置文件
+      interval: 3600
   foo1:
-    type: http
-    path: ./profiles/proxies/foo1.yaml
-    url: 订阅链接
-    interval: 3600
-    filter: '香港|HK|日本|台湾|韩国|新加坡|印度' # 筛选出含有该关键词的节点
+    type: file
+    path: ./profiles/配置文件名
+    filter: 香港|HK|日本|台湾|韩国|新加坡|印度
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
-      interval: 300
-
-  # 从链接导入的配置文件
+      interval: 3600
   foo2:
-    type: http
-    path: ./profiles/proxies/foo2.yaml
-    url: 订阅链接
-    interval: 3600
-    filter: 'IPLC'
+    type: file
+    path: ./profiles/配置文件名
+    filter: IPLC
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
-      interval: 300
-
-# 策略组
-# type: select = 手动选择
-# type: url-test = clash 测速后自动选择最快
-
+      interval: 3600
 proxy-groups:
   - name: 🎯 全球直连
     type: select
@@ -57,36 +36,31 @@ proxy-groups:
       - foo2
     proxies:
       - DIRECT
-
   - name: 🎮 游戏平台
     type: select
     use:
       - foo
       - foo2
     proxies:
-     - DIRECT
-
+      - DIRECT
   - name: 📺 海外视频
     type: select
     use:
       - foo1
     proxies:
-     - DIRECT
-
+      - DIRECT
   - name: 🍎 Apple
     type: select
     use:
       - foo1
     proxies:
-     - DIRECT
-
+      - DIRECT
   - name: ❌ 广告域
     type: select
     use:
       - foo1
     proxies:
-     - DIRECT
-
+      - DIRECT
   - name: 📲 Telegram
     type: url-test
     url: http://www.gstatic.com/generate_204
@@ -94,7 +68,6 @@ proxy-groups:
     tolerance: 50
     use:
       - foo1
-
   - name: 🔘 剩余白名单
     type: select
     url: http://www.gstatic.com/generate_204
@@ -104,11 +77,8 @@ proxy-groups:
       - foo
       - foo1
     proxies:
-     - ⚖️ 负载均衡-散列
-     - ⚖️ 负载均衡-轮询
-
-
-    
+      - ⚖️ 负载均衡-散列
+      - ⚖️ 负载均衡-轮询
   - name: ⚖️ 负载均衡-散列
     type: load-balance
     url: http://www.google.com/generate_204
@@ -116,8 +86,7 @@ proxy-groups:
     strategy: consistent-hashing
     use:
       - foo1
-    proxies:
-
+    proxies: null
   - name: ⚖️ 负载均衡-轮询
     type: load-balance
     url: http://www.google.com/generate_204
@@ -125,13 +94,9 @@ proxy-groups:
     strategy: round-robin
     use:
       - foo1
-    proxies:
-
-
-# clash-rules项目提供的规则集
-# 规则文件统一存放在 ./profiles/rules/ 目录中
-## 配置策略组
+    proxies: null
 rules:
+  - DOMAIN,dockerproxy.com,🎯 全球直连
   - RULE-SET,applications,DIRECT
   - DOMAIN,clash.razord.top,DIRECT
   - DOMAIN,yacd.haishan.me,DIRECT
@@ -149,113 +114,94 @@ rules:
   - GEOIP,LAN,DIRECT
   - GEOIP,CN,DIRECT
   - MATCH,🔘 剩余白名单
-
-
-## IP地址集
 rule-providers:
-## 游戏域名列表
   game:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.yaml"
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.yaml
     path: ./ruleset/game.yaml
     interval: 86400
-## 海外流媒体域名列表
   GlobalMedia:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia.yaml"
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia.yaml
     path: ./ruleset/GlobalMedia.yaml
     interval: 86400
-## 广告域名列表
   reject:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/reject.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/reject.txt
     path: ./ruleset/reject.yaml
     interval: 86400
-## 苹果
   Apple:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml"
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml
     path: ./ruleset/apple.yaml
     interval: 86400
-## 谷歌中国大陆可直连的域名列表
   google:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/google.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/google.txt
     path: ./ruleset/google.yaml
     interval: 86400
-## 代理域名列表
   proxy:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/proxy.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/proxy.txt
     path: ./ruleset/proxy.yaml
     interval: 86400
-## 直连域名列表
   direct:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt
     path: ./ruleset/direct.yaml
     interval: 86400
-## 私有网络专用域名列表
   private:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/private.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/private.txt
     path: ./ruleset/private.yaml
     interval: 86400
-## GFWList 域名列表
   gfw:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/gfw.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/gfw.txt
     path: ./ruleset/gfw.yaml
     interval: 86400
-## GreatFire 域名列表
   greatfire:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/greatfire.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/greatfire.txt
     path: ./ruleset/greatfire.yaml
     interval: 86400
-## 非中国大陆使用的顶级域名列表
   tld-not-cn:
     type: http
     behavior: domain
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/tld-not-cn.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/tld-not-cn.txt
     path: ./ruleset/tld-not-cn.yaml
     interval: 86400
-## Telegram 
   telegramcidr:
     type: http
     behavior: ipcidr
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/telegramcidr.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/telegramcidr.txt
     path: ./ruleset/telegramcidr.yaml
     interval: 86400
-## 中国大陆 IP 地址列表
   cncidr:
     type: http
     behavior: ipcidr
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/cncidr.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/cncidr.txt
     path: ./ruleset/cncidr.yaml
     interval: 86400
-## 局域网 IP 及保留 IP 地址列表
   lancidr:
     type: http
     behavior: ipcidr
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/lancidr.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/lancidr.txt
     path: ./ruleset/lancidr.yaml
     interval: 86400
-## 需要直连的常见软件列表 Applications
   applications:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/applications.txt"
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/applications.txt
     path: ./ruleset/applications.yaml
     interval: 86400
-
