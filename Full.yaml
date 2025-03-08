@@ -1,0 +1,148 @@
+proxy-groups:
+  - name: 🎯 全球直连
+    type: select
+    proxies: [DIRECT]
+
+  - name: 🛑 广告拦截
+    type: select
+    proxies: [REJECT, DIRECT]
+
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies: [DIRECT]
+
+  - name: 🎮 游戏平台
+    type: select
+    proxies: [DIRECT]
+
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies: [DIRECT]
+
+rule-providers:
+  LocalAreaNetwork:
+    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/LocalAreaNetwork.list
+    behavior: classical
+    interval: 86400
+    
+  BanAD:
+    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list
+    behavior: classical
+    interval: 86400
+
+  BanProgramAD:
+    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list
+    behavior: classical
+    interval: 86400
+
+  # 新增规则集
+  ai:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/Iuleoo/Clash/master/Ruleset/ai.yaml
+    path: ./ruleset/ai.yaml
+    interval: 86400
+
+  game:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.yaml
+    path: ./ruleset/game.yaml
+    interval: 86400
+
+  Microsoft:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml
+    path: ./ruleset/Microsoft.yaml
+    interval: 86400
+
+  Bing:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bing/Bing.yaml
+    path: ./ruleset/Bing.yaml
+    interval: 86400
+
+  cncidr:
+    type: http
+    behavior: ipcidr
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/cncidr.txt
+    path: ./ruleset/cncidr.yaml
+    interval: 86400
+
+  applications:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/applications.txt
+    path: ./ruleset/applications.yaml
+    interval: 86400
+
+  direct:
+    type: http
+    behavior: domain
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt
+    path: ./ruleset/direct.yaml
+    interval: 86400
+
+  lancidr:
+    type: http
+    behavior: ipcidr
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/lancidr.txt
+    path: ./ruleset/lancidr.yaml
+    interval: 86400
+
+  private:
+    type: http
+    behavior: domain
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/private.txt
+    path: ./ruleset/private.yaml
+    interval: 86400
+
+rules:
+  # 自定义IP规则
+  - IP-CIDR,35.236.86.197/32,DIRECT,no-resolve
+  - IP-CIDR,34.89.57.159/32,DIRECT,no-resolve
+  - IP-CIDR,35.201.173.59/32,DIRECT,no-resolve
+  - IP-CIDR,34.92.244.47/32,DIRECT,no-resolve
+  - IP-CIDR,47.76.69.53/32,DIRECT,no-resolve
+  
+  # 本地管理面板直连
+  - DOMAIN,127.0.0.1:7001,DIRECT
+  - DOMAIN,clash.razord.top,DIRECT
+  - DOMAIN,yacd.haishan.me,DIRECT
+
+  # 基础规则集
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - RULE-SET,BanAD,🛑 广告拦截
+  - RULE-SET,BanProgramAD,🛑 广告拦截
+
+  # AI相关流量
+  - RULE-SET,ai,🎯 全球直连
+
+  # 游戏平台规则
+  - DOMAIN-SUFFIX,sentry.io,🎮 游戏平台
+  - DOMAIN-SUFFIX,geforcenow.com,🎮 游戏平台
+  - DOMAIN-SUFFIX,truckersmp.com,🎮 游戏平台
+  - DOMAIN-SUFFIX,ets2mp.com,🎮 游戏平台
+  - RULE-SET,game,🎮 游戏平台
+
+  # 微软相关
+  - RULE-SET,Microsoft,Ⓜ️ 微软服务
+  - RULE-SET,Bing,Ⓜ️ 微软服务
+
+  # 直连规则
+  - RULE-SET,applications,🎯 全球直连
+  - RULE-SET,private,🎯 全球直连
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,lancidr,🎯 全球直连
+  - RULE-SET,cncidr,🎯 全球直连
+  - GEOIP,LAN,🎯 全球直连
+  - GEOIP,CN,🎯 全球直连
+  
+  # 域名直连规则
+  - DOMAIN-SUFFIX,local,DIRECT
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - DOMAIN-KEYWORD,-cn,DIRECT
+
+  - MATCH,🐟 漏网之鱼
