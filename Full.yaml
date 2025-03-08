@@ -169,7 +169,6 @@ rules:
   - "RULE-SET,Sony,🎮 游戏平台"
   - "RULE-SET,Steam,🎮 游戏平台"
   - "RULE-SET,Nintendo,🎮 游戏平台"
-  - "RULE-SET,ProxyGFWlist,🚀 节点选择"
   - "RULE-SET,ChinaDomain,🎯 全球直连"
   - "RULE-SET,ChinaCompanyIp,🎯 全球直连"
   - "RULE-SET,Download,🎯 全球直连"
