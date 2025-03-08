@@ -1,23 +1,25 @@
-# 完整配置文件建议保存为 config.yaml
+# config.yaml
+# Clash 核心配置文件 (支持Meta内核)
+
+# --------------------------
+# 代理组配置
+# --------------------------
 proxy-groups:
-  # --------------------------
-  # 核心代理组 (必须存在)
-  # --------------------------
+  # 核心代理组
   - name: 🚀 节点选择
     type: select
     proxies:
-      - 香港节点  # 需替换为实际节点名称
+      - 香港节点  # 请替换为实际节点名称
       - 台湾节点
       - 日本节点
       - DIRECT
 
-  # --------------------------
   # 功能策略组
-  # --------------------------
   - name: Ⓜ️ 微软服务
     type: url-test
     url: http://www.gstatic.com/generate_204
     interval: 300
+    tolerance: 50
     proxies:
       - DIRECT
       - 🚀 节点选择
@@ -30,13 +32,7 @@ proxy-groups:
       - 🚀 节点选择
       - DIRECT
 
-  - name: 📢 谷歌FCM
-    type: select
-    proxies: [DIRECT]
-
-  # --------------------------
   # 基础策略组
-  # --------------------------
   - name: 🎯 全球直连
     type: select
     proxies: [DIRECT]
@@ -52,64 +48,65 @@ proxy-groups:
 # --------------------------
 # 规则集配置
 # --------------------------
-rule-providers: 
-  # 基础规则集
-  LocalAreaNetwork: &基础
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/LocalAreaNetwork.list
-    path: ./ruleset/LocalAreaNetwork.list
+rule-providers:
+  LocalAreaNetwork:
+    type: http
     behavior: classical
+    url: "https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/LocalAreaNetwork.list"
+    path: ./ruleset/LocalAreaNetwork.yaml
     interval: 86400
-  
-  BanAD: &广告
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list
-    path: ./ruleset/BanAD.list
-    behavior: classical
-    interval: 86400
+    format: text
 
-  # 服务规则集
-  Microsoft: &微软
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list
-    path: ./ruleset/Microsoft.list
+  BanAD:
+    type: http
     behavior: classical
+    url: "https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list"
+    path: ./ruleset/BanAD.yaml
     interval: 86400
+    format: text
 
-  # 游戏规则集
-  Steam: &游戏
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/Steam.list
-    path: ./ruleset/Steam.list
+  Microsoft:
+    type: http
     behavior: classical
+    url: "https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list"
+    path: ./ruleset/Microsoft.yaml
     interval: 86400
+    format: text
 
-  # GFW列表
-  ProxyGFWlist: &代理
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyGFWlist.list
-    path: ./ruleset/ProxyGFWlist.list
+  Steam:
+    type: http
     behavior: classical
+    url: "https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/Steam.list"
+    path: ./ruleset/Steam.yaml
     interval: 86400
+    format: text
+
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: "https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyGFWlist.list"
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: text
 
 # --------------------------
 # 流量规则
 # --------------------------
 rules:
-  # 基础规则
   - RULE-SET,LocalAreaNetwork,🎯 全球直连
   - RULE-SET,BanAD,🛑 广告拦截
-
-  # 微软服务
-  - RULE-SET,Bing,Ⓜ️ 微软服务
-  - RULE-SET,OneDrive,Ⓜ️ 微软服务
   - RULE-SET,Microsoft,Ⓜ️ 微软服务
-
-  # 游戏平台
-  - RULE-SET,Epic,🎮 游戏平台
-  - RULE-SET,Origin,🎮 游戏平台
-  - RULE-SET,Sony,🎮 游戏平台
   - RULE-SET,Steam,🎮 游戏平台
-  - RULE-SET,Nintendo,🎮 游戏平台
-
-  # 核心代理规则
   - RULE-SET,ProxyGFWlist,🚀 节点选择
-  
-  # 最终兜底规则
   - GEOIP,CN,🎯 全球直连
   - MATCH,🐟 漏网之鱼
+
+# --------------------------
+# 基础设置
+# --------------------------
+port: 7890
+socks-port: 7891
+allow-lan: false
+mode: Rule
+log-level: info
+external-controller: 127.0.0.1:9090
